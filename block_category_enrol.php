@@ -39,7 +39,7 @@ class block_category_enrol extends block_base {
      * @return stdClass The block contents.
      */
     public function get_content() {
-        global $DB;
+        global $DB, $COURSE, $CFG;
 
         if ($this->content !== null) {
             return $this->content;
@@ -65,10 +65,17 @@ class block_category_enrol extends block_base {
             $a->courserole = $userroles[$this->config->roleid_incourse];
             $a->categoryrole = $userroles[$this->config->roleid_atcategory];
             $this->content->text = get_string('roleautoassignment', 'block_category_enrol', $a);
-            //$this->content->text = 'InCourse RoleID='.$this->config->roleid_incourse .'<br>'.
-            //'AtCategory RoleID='.$this->config->roleid_atcategory;
+            unset($a);
+            // If user has proper roles... allow to create a course and link to the category.
+            if (has_capability('moodle/course:create', context_coursecat::instance($COURSE->category))) {
+                $a = new stdClass;
+                $a->cancreatecourse = '<a href="'.$CFG->wwwroot.'/course/edit.php?category='.$COURSE->category.'">'.get_string("addnewcourse").'</a>';
+                $coursecategory = $DB->get_record('course_categories', array('id' => $COURSE->category));
+                $a->categorylink = '<a href="'.$CFG->wwwroot.'/course/index.php?categoryid='.$COURSE->category.'">'.$coursecategory->name.'</a>';
+                $this->content->text .= get_string('cancreateacourse', 'block_category_enrol', $a);
+            }
         } else {
-            $text = 'Please define auto role enrollment settings for this block.';
+            $text = get_string('setupblock', 'block_category_enrol');
             $this->content->text = $text;
         }
 

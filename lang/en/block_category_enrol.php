@@ -30,4 +30,7 @@ $string['pluginname'] = 'Category auto enrol';
 $string['courseroles'] = 'Course role';
 $string['categoryroles'] = 'Category role';
 $string['setupblock'] = 'Please go into block setting to define auto role assignment.';
-$string['roleautoassignment'] = 'Users assigned role "{$a->courserole}" in this course are automatically assigned the role "{$a->categoryrole}" in the course category.';
+$string['roleautoassignment'] = 'Users assigned role "{$a->courserole}" in this course are automatically assigned '.
+                                'the role "{$a->categoryrole}" in the course category';
+$string['cancreateacourse'] = ', and can {$a->cancreatecourse} in the category: {$a->categorylink}';
+
