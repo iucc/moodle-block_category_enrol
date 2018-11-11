@@ -41,12 +41,14 @@ class observer {
         global $DB;
 
         // $event->objectid == roleid
-        $category_enrol_blockinstance = $DB->get_record('block_instances', array('parentcontextid' => $event->contextid));
+        $category_enrol_blockinstance = $DB->get_record('block_instances',
+            array('parentcontextid' => $event->contextid, 'blockname' => 'category_enrol'));
         if (!empty($category_enrol_blockinstance->configdata)) {
             $category_enrol_config = unserialize(base64_decode($category_enrol_blockinstance->configdata));
         }
         $roleassignmentid = false;
-        if ($event->action === 'assigned' && $event->target === 'role' && $event->objectid == $category_enrol_config->roleid_incourse) {
+        if ($event->action === 'assigned' && $event->target === 'role' &&
+            !empty($category_enrol_config) && $event->objectid == $category_enrol_config->roleid_incourse) {
             $course = $DB->get_record('course', array('id' => $event->courseid));
             $contextcategory = \context_coursecat::instance($course->category);
             $roleassignmentid = role_assign($category_enrol_config->roleid_atcategory, $event->relateduserid, $contextcategory->id);
