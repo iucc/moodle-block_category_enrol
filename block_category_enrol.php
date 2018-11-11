@@ -64,7 +64,11 @@ class block_category_enrol extends block_base {
             $a = new stdClass;
             $a->courserole = $userroles[$this->config->roleid_incourse];
             $a->categoryrole = $userroles[$this->config->roleid_atcategory];
-            $this->content->text = get_string('roleautoassignment', 'block_category_enrol', $a);
+            if (has_capability('moodle/course:update', context_course::instance($COURSE->id))) {
+                $this->content->text = get_string('roleautoassignmentteacher', 'block_category_enrol', $a);
+            } else {
+                $this->content->text = get_string('roleautoassignmentstudent', 'block_category_enrol', $a);
+            }
             unset($a);
             // If user has proper roles... allow to create a course and link to the category.
             if (has_capability('moodle/course:create', context_coursecat::instance($COURSE->category))) {
